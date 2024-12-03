@@ -29,7 +29,7 @@ class AppInfo(BaseModel):
 
 @app.get("/app/{package_name}", response_class=HTMLResponse)
 @limiter.limit("5/minute")
-def get_app_info(package_name: str):
+def get_app_info(package_name: str, request: Request):
     app_info_url = f"https://backapi.rustore.ru/applicationData/overallInfo/{package_name}"
     response = requests.get(app_info_url)
     if response.status_code != 200:
