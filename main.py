@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
-from urllib.parse import quote
+# from urllib.parse import quote
 
 limiter = Limiter(key_func=get_remote_address)
 app = FastAPI()
@@ -60,17 +60,7 @@ def get_app_info(package_name: str, request: Request):
         raise HTTPException(status_code=response.status_code, detail=response.text)
 
     download_link = response.json()["body"]["apkUrl"]
-    obtainium_link = """{
-            "apps": [
-                {
-                    "id": "% s",
-                    "url": "https://rustoredl.023366.xyz/app/% s",
-                    "author": "% s",
-                    "name": "% s",
-                    "additionalSettings": "{\"versionExtractWholePage\":true,\"versionExtractionRegEx\":\"Версия для Obtainium:\\\\s*(\\\\d+)\",\"versionDetection\":false,\"useVersionCodeAsOSVersion\":false,\"about\":\"% s\"}",
-                }
-            ]
-        }""" % (
+    obtainium_link = '{"apps":[{"id": "% s","url":"https://rustoredl.023366.xyz/app/% s","author":"% s","name":"% s","additionalSettings":"{\"versionExtractWholePage\":true,\"versionExtractionRegEx\":\"Версия для Obtainium:\\\\s*(\\\\d+)\",\"versionDetection\":false,\"useVersionCodeAsOSVersion\":false,\"about\":\"% s\"}",}]}' % (
         app_info.package_name,
         app_info.package_name,
         app_info.company_name,
