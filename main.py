@@ -85,7 +85,7 @@ def get_app_info(package_name: str, request: Request):
         </head>
         <body>
             <h1><a href={download_link}>Скачать {app_info.app_name}</a> Версия: {app_info.version_name} Версия для Obtainium: {app_info.version_code}</h1>
-            <h1><a href="{"obtainium://app/" + quote(obtainium_link)}"><img src="https://raw.githubusercontent.com/ImranR98/Obtainium/main/assets/graphics/badge_obtainium.png" alt="Добавить в obtainium"</img></a></h1>
+            <h1><a href="{"obtainium://app/" + obtainium_link}"><img src="https://raw.githubusercontent.com/ImranR98/Obtainium/main/assets/graphics/badge_obtainium.png" alt="Добавить в obtainium"</img></a></h1>
             <h3>Если у вас возникли трудности с добавлением через кнопку, скопируйте конфигурацию ниже и вставьте её в Obtainium вручную.</h3>
             <textarea readonly>{obtainium_link}</textarea>
         </body>
