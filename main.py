@@ -13,10 +13,10 @@ app = FastAPI()
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-@app.get("/")
-@limiter.limit("10/minute")
-async def read_index(request: Request):
-    return FileResponse('index.html')
+# @app.get("/")
+# @limiter.limit("10/minute")
+# async def read_index(request: Request):
+#     return FileResponse('index.html')
 
 
 class AppInfo(BaseModel):
