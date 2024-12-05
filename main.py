@@ -67,19 +67,7 @@ def get_app_info(package_name: str, request: Request):
                     "url": "https://rustoredl.023366.xyz/app/% s",
                     "author": "% s",
                     "name": "% s",
-                    "installedVersion": "",
-                    "latestVersion": "",
-                    "apkUrls": "[]",
-                    "otherAssetUrls": "[]",
-                    "preferredApkIndex": 0,
-                    "additionalSettings": "{\"intermediateLink\":[],\"customLinkFilterRegex\":\"\",\"filterByLinkText\":false,\"skipSort\":false,\"reverseSort\":false,\"sortByLastLinkSegment\":false,\"versionExtractWholePage\":true,\"requestHeader\":[],\"defaultPseudoVersioningMethod\":\"partialAPKHash\",\"trackOnly\":false,\"versionExtractionRegEx\":\"Версия для Obtainium:\\\\s*(\\\\d+)\",\"matchGroupToUse\":\"\",\"versionDetection\":false,\"useVersionCodeAsOSVersion\":false,\"apkFilterRegEx\":\"\",\"invertAPKFilter\":false,\"autoApkFilterByArch\":true,\"appName\":\"\",\"shizukuPretendToBeGooglePlay\":false,\"allowInsecure\":false,\"exemptFromBackgroundUpdates\":false,\"skipUpdateNotifications\":false,\"about\":\"% s\"}",
-                    "lastUpdateCheck": 0,
-                    "pinned": false,
-                    "categories": [],
-                    "releaseDate": null,
-                    "changeLog": null,
-                    "overrideSource": null,
-                    "allowIdChange": false
+                    "additionalSettings": "{\"versionExtractWholePage\":true,\"versionExtractionRegEx\":\"Версия для Obtainium:\\\\s*(\\\\d+)\",\"versionDetection\":false,\"useVersionCodeAsOSVersion\":false,\"about\":\"% s\"}",
                 }
             ]
         }""" % (
