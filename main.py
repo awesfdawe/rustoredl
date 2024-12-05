@@ -6,7 +6,6 @@ from pydantic import BaseModel
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
-from urllib.parse import quote
 
 limiter = Limiter(key_func=get_remote_address)
 app = FastAPI()
@@ -22,11 +21,8 @@ async def read_index(request: Request):
 
 class AppInfo(BaseModel):
     app_name: str
-    short_description: str
     version_name: str
     version_code: int
-    package_name: str
-    company_name: str
 
 
 @app.get("/app/{package_name}", response_class=HTMLResponse)
@@ -43,11 +39,8 @@ def get_app_info(package_name: str, request: Request):
 
     app_info = AppInfo(
         app_name=data["appName"],
-        short_description=data["shortDescription"],
         version_name=data["versionName"],
         version_code=data["versionCode"],
-        package_name=data["packageName"],
-        company_name=data["companyName"],
     )
 
     download_url = "https://backapi.rustore.ru/applicationData/download-link"
@@ -60,13 +53,7 @@ def get_app_info(package_name: str, request: Request):
         raise HTTPException(status_code=response.status_code, detail=response.text)
 
     download_link = response.json()["body"]["apkUrl"]
-    obtainium_link = '{"apps":[{"id": "% s","url":"https://rustoredl.023366.xyz/app/% s","author":"% s","name":"% s","additionalSettings":"{\"versionExtractWholePage\":true,\"versionExtractionRegEx\":\"Версия для Obtainium:\\\\s*(\\\\d+)\",\"versionDetection\":false,\"useVersionCodeAsOSVersion\":false,\"about\":\"% s\"}",}]}' % (
-        app_info.package_name,
-        app_info.package_name,
-        app_info.company_name,
-        app_info.app_name,
-        app_info.short_description,
-    )
+
     return f"""
     <!DOCTYPE html>
     <html>
@@ -75,9 +62,11 @@ def get_app_info(package_name: str, request: Request):
         </head>
         <body>
             <h1><a href={download_link}>Скачать {app_info.app_name}</a> Версия: {app_info.version_name} Версия для Obtainium: {app_info.version_code}</h1>
-            <h1><a href="{"obtainium://app/" + quote(obtainium_link)}"><img src="https://raw.githubusercontent.com/ImranR98/Obtainium/main/assets/graphics/badge_obtainium.png" alt="Добавить в obtainium"</img></a></h1>
-            <h3>Если у вас возникли трудности с добавлением через кнопку, скопируйте конфигурацию ниже и вставьте её в Obtainium вручную.</h3>
-            <textarea readonly>{obtainium_link}</textarea>
+            <h2>Инструкция по добавлению приложений из RuStore:</h2>
+            <h3>1. Введите ссылку из адресной строке браузера.</h3>
+            <h3>2. Активируйте опцию "Применить регулярное выражение версии ко всей странице".</h3>
+            <h3>3. Введите регулярное выражение в поле "Регулярное выражение для извлечения версии": <b>Версия для Obtainium:\s*(\d+)</b></h3>
+            <h3>4. Отключите опцию "Согласовать строку версии с версией, обнаруженной в ОС".</h3>
         </body>
     </html>
     """

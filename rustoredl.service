@@ -1,0 +1,13 @@
+[Unit]
+Description=rustoredl
+After=network.target
+
+[Service]
+User=USER_HERE
+WorkingDirectory=/PATH_HERE/rustoredl
+ExecStart=/PATH_HERE/.venv/bin/uvicorn main:app
+Restart=on-failure
+RestartSec=1s
+
+[Install]
+WantedBy=multi-user.target
