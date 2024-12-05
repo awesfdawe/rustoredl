@@ -1,7 +1,7 @@
 import requests
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse
-from starlette.responses import FileResponse 
+from starlette.responses import FileResponse
 from pydantic import BaseModel
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
@@ -13,10 +13,11 @@ app = FastAPI()
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-# @app.get("/")
-# @limiter.limit("10/minute")
-# async def read_index(request: Request):
-#     return FileResponse('index.html')
+
+@app.get("/")
+@limiter.limit("10/minute")
+async def read_index(request: Request):
+    return FileResponse("index.html")
 
 
 class AppInfo(BaseModel):
@@ -27,10 +28,13 @@ class AppInfo(BaseModel):
     package_name: str
     company_name: str
 
+
 @app.get("/app/{package_name}", response_class=HTMLResponse)
 @limiter.limit("5/minute")
 def get_app_info(package_name: str, request: Request):
-    app_info_url = f"https://backapi.rustore.ru/applicationData/overallInfo/{package_name}"
+    app_info_url = (
+        f"https://backapi.rustore.ru/applicationData/overallInfo/{package_name}"
+    )
     response = requests.get(app_info_url)
     if response.status_code != 200:
         raise HTTPException(status_code=response.status_code, detail=response.text)
@@ -56,7 +60,35 @@ def get_app_info(package_name: str, request: Request):
         raise HTTPException(status_code=response.status_code, detail=response.text)
 
     download_link = response.json()["body"]["apkUrl"]
-    obtainium_link = '{"id":"%s","url":"https://rustoredl.013366.xyz/app/%s","author":"%s","name":"%s","preferredApkIndex":0,"additionalSettings":"{\"intermediateLink\":[],\"customLinkFilterRegex\":\"\",\"filterByLinkText\":false,\"skipSort\":false,\"reverseSort\":false,\"sortByLastLinkSegment\":false,\"versionExtractWholePage\":true,\"requestHeader\":[],\"defaultPseudoVersioningMethod\":\"partialAPKHash\",\"trackOnly\":false,\"versionExtractionRegEx\":\"Версия для Obtainium: (\\\\d+)\",\"matchGroupToUse\":\"\",\"versionDetection\":false,\"useVersionCodeAsOSVersion\":false,\"apkFilterRegEx\":\"\",\"invertAPKFilter\":false,\"autoApkFilterByArch\":false,\"appName\":\"%s\",\"shizukuPretendToBeGooglePlay\":false,\"allowInsecure\":false,\"exemptFromBackgroundUpdates\":false,\"skipUpdateNotifications\":false,\"about\":\"%s\",\"supportFixedAPKURL\":false}","overrideSource":null}' % (app_info.package_name, app_info.package_name, app_info.company_name, app_info.app_name, app_info.app_name, app_info.short_description)
+    obtainium_link = """{
+            "apps": [
+                {
+                    "id": "% s",
+                    "url": "https://rustoredl.023366.xyz/app/% s",
+                    "author": "% s",
+                    "name": "% s",
+                    "installedVersion": "",
+                    "latestVersion": "",
+                    "apkUrls": "[]",
+                    "otherAssetUrls": "[]",
+                    "preferredApkIndex": 0,
+                    "additionalSettings": "{\"intermediateLink\":[],\"customLinkFilterRegex\":\"\",\"filterByLinkText\":false,\"skipSort\":false,\"reverseSort\":false,\"sortByLastLinkSegment\":false,\"versionExtractWholePage\":true,\"requestHeader\":[],\"defaultPseudoVersioningMethod\":\"partialAPKHash\",\"trackOnly\":false,\"versionExtractionRegEx\":\"Версия для Obtainium:\\\\s*(\\\\d+)\",\"matchGroupToUse\":\"\",\"versionDetection\":false,\"useVersionCodeAsOSVersion\":false,\"apkFilterRegEx\":\"\",\"invertAPKFilter\":false,\"autoApkFilterByArch\":true,\"appName\":\"\",\"shizukuPretendToBeGooglePlay\":false,\"allowInsecure\":false,\"exemptFromBackgroundUpdates\":false,\"skipUpdateNotifications\":false,\"about\":\"% s\"}",
+                    "lastUpdateCheck": 0,
+                    "pinned": false,
+                    "categories": [],
+                    "releaseDate": null,
+                    "changeLog": null,
+                    "overrideSource": null,
+                    "allowIdChange": false
+                }
+            ]
+        }""" % (
+        app_info.package_name,
+        app_info.package_name,
+        app_info.company_name,
+        app_info.app_name,
+        app_info.short_description,
+    )
     return f"""
     <!DOCTYPE html>
     <html>
